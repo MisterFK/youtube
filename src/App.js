@@ -9,37 +9,54 @@ import NewUser from "./pages/newUser/NewUser";
 import ProductList from "./pages/productList/ProductList";
 import Product from "./pages/product/Product";
 import NewProduct from "./pages/newProduct/NewProduct";
+import Login from "./pages/login/Login";
 
 function App() {
+  const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
+  const currentUser = user && JSON.parse(user).currentUser;
+  const isAdmin = currentUser?.isAdmin;
+
   return (
     <Router>
-      <Topbar />
-      <div className="container">
-        <Sidebar />
-        <Switch>
+      <Switch>
+        <Route path="/login">
+          <Login />
+        </Route>
+        {!isAdmin && (
           <Route exact path="/">
-            <Home />
+            <Login />
           </Route>
-          <Route path="/users">
-            <UserList />
-          </Route>
-          <Route path="/user/:userId">
-            <User />
-          </Route>
-          <Route path="/newUser">
-            <NewUser />
-          </Route>
-          <Route path="/products">
-            <ProductList />
-          </Route>
-          <Route path="/product/:productId">
-            <Product />
-          </Route>
-          <Route path="/newproduct">
-            <NewProduct />
-          </Route>
-        </Switch>
-      </div>
+        )}
+        {isAdmin && (
+          <>
+            <Topbar />
+            <div className="container">
+              <Sidebar />
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route path="/users">
+                <UserList />
+              </Route>
+              <Route path="/user/:userId">
+                <User />
+              </Route>
+              <Route path="/newUser">
+                <NewUser />
+              </Route>
+              <Route path="/products">
+                <ProductList />
+              </Route>
+              <Route path="/product/:productId">
+                <Product />
+              </Route>
+              <Route path="/newproduct">
+                <NewProduct />
+              </Route>
+            </div>
+          </>
+        )}
+      </Switch>
     </Router>
   );
 }
